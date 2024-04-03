@@ -9,6 +9,7 @@ Implementations
     shall
     frappy
     octopy
+    microsecop
 
 
 ..
@@ -49,3 +50,11 @@ Octopy
 an industrial IOT centered solution with an EPICS connection.
 It builds its SECoP infrastructure upon MQTT and provides interfaces for easy
 configuration like Node-red.
+
+
+µSECoP
+~~~~~~
+
+:doc:`µSECoP <microsecop>` is an early-stage Rust implementation intended for
+embedded usage, e.g. in microcontollers. There are existing examples for the
+Esp32, the RP2040, and the Stm32.

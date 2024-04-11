@@ -13,7 +13,7 @@ DE 811193231
 Direktor
 --------
 
-Prof. Dr. Peter Müller-Buschbaum
+Prof. Dr. Christian Pfleiderer
 
 Kontakt
 -------

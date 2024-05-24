@@ -22,13 +22,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+      - name: Checkout spec repo
+        uses: actions/checkout@v4
+        with:
+          repository: SampleEnvironment/SECoP
+          path: ./SECoP
+      - name: copy spec into correct folder
+        run: cp -r ./SECoP/protocol/specification/* source/specification
       - name: install sphinx
         run: pip install -r requirements.txt
       - name: build with sphinx
         run: make html
       - name: Upload
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v3
         with:
           path: ./build/html
 
@@ -42,4 +49,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v1
+        uses: actions/deploy-pages@v4

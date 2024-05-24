@@ -9,7 +9,7 @@ Welcome to SECoP!
     :hidden:
 
     intro/index
-    spec1-0/index
+    specification/index
 
 .. toctree::
     :maxdepth: 1

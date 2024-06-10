@@ -59,7 +59,7 @@ Welcome to SECoP!
 
    .. grid-item::
 
-      .. button-ref:: spec1-0/index
+      .. button-ref:: specification/index
          :color: info
          :shadow:
 
@@ -106,7 +106,7 @@ The :doc:`Introduction <intro/index>` section has examples of the protocol, as
 well as example code to get started with writing drivers using one of our
 implementations.
 
-See the :doc:`Specification <spec1-0/index>` section for the full specification.
+See the :doc:`Specification <specification/index>` section for the full specification.
 
 In :doc:`Implementations <implementations/index>` you can see the known implementations, which
 cover a wide range of use cases and technologies.

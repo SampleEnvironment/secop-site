@@ -38,8 +38,6 @@ Packages
 
 There are RPM and debian packages uilt by us.
 
-Windows builds can be found `here <https://forge.frm2.tum.de/public/>`_.
-
 .. pypi once that has been resolved
 
 Standalone Gui on Windows

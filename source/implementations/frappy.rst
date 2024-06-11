@@ -36,7 +36,9 @@ You can find the source on `GitHub <https://github.com/SampleEnvironment/frappy>
 Packages
 --------
 
-There are RPM and debian packages are built by us.
+There are RPM and debian packages uilt by us.
+
+Windows builds can be found `here <https://forge.frm2.tum.de/public/>`_.
 
 .. pypi once that has been resolved
 

@@ -9,7 +9,7 @@ Octopy
 
 Octopy is an SECoP implementation based on MQTT.
 
-.. image:: ./images/octopy_web2.svg
+.. image:: ../specification/images/secop-img/implementations-octopy.svg
    :align: center
 
 Instead of a client-server approach Octopy internally and externally transports SECoP JSON formatted messages, data report, structure report and error reports, over MQTT.

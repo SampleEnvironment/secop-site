@@ -5,7 +5,7 @@ SHALL
 SHALL is a C/C++ library, which can be called from high-level programming languages
 with a C-compatible interface.
 
-.. image:: images/shall.svg
+.. image:: ../specification/images/secop-img/implementations-shall.svg
    :align: center
 
 

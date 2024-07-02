@@ -1,5 +1,5 @@
 ==============
-Gettig Started
+Getting Started
 ==============
 
 Here we want to show you, how to get started with SECoP.

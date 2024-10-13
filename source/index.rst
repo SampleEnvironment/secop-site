@@ -10,6 +10,7 @@ Welcome to SECoP!
 
     intro/index
     specification/index
+    Spec 1.0 <specification/SECoP_Specification_V1.0>
 
 .. toctree::
     :maxdepth: 1

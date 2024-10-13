@@ -30,15 +30,17 @@ jobs:
           path: ./SECoP
       - name: copy spec into correct folder
         run: cp -r ./SECoP/protocol/specification/* source/specification
+      - name: copy 1-0 spec into correct folder
+        run: cp ./SECoP/protocol/SECoP_Specification_V1.0.rst source/specification/SECoP_Specification_V1.0.rst
       - name: Import secop-img SVGs
         uses: robinraju/release-downloader@v1.10
-        with: 
+        with:
           repository: 'Bilchreis/secop-img'
           latest: true
           tarBall: false
           zipBall: false
           fileName: '*.svg'
-          out-file-path: 'source/specification/images/secop-img'          
+          out-file-path: 'source/specification/images/secop-img'
       - name: install sphinx
         run: pip install -r requirements.txt
       - name: build with sphinx

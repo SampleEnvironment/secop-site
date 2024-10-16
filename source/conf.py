@@ -43,6 +43,7 @@ extensions = [
     'sphinx.ext.todo',
     'sphinx.ext.extlinks',
     'sphinx_design',
+    'sphinx_favicon',
 ]
 
 todo_include_todos = True
@@ -83,26 +84,7 @@ html_theme_options = {
         'image_light': 'logo.svg',
         'image_dark': 'logo.svg',
     },
-    'footer_items': ['copyright'],
     'secondary_sidebar_items': ['page-toc', 'sourcelink'],
-    'favicons': [
-        {
-            'rel': 'icon',
-            'sizes': '16x16',
-            'href': 'favicon16.png',
-        },
-        {
-            'rel': 'icon',
-            'sizes': '32x32',
-            'href': 'favicon32.png',
-        },
-        {
-            'rel': 'apple-touch-icon',
-            'sizes': '180x180',
-            'href': 'favicon.png',
-            'color': '#000000',
-        },
-    ],
     #"announcement": "<em>Important</em> announcement!",
     'header_links_before_dropdown': 4,
     # links with icons to the right of the search icon:
@@ -115,6 +97,26 @@ html_theme_options = {
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+
+favicons = [
+    {
+        'rel': 'icon',
+        'sizes': '16x16',
+        'href': 'favicon16.png',
+    },
+    {
+        'rel': 'icon',
+        'sizes': '32x32',
+        'href': 'favicon32.png',
+    },
+    {
+        'rel': 'apple-touch-icon',
+        'sizes': '180x180',
+        'href': 'favicon.png',
+        'color': '#000000',
+    },
+]
 
 
 class SECoPLexer(RegexLexer):

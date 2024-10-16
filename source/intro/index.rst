@@ -2,12 +2,6 @@
 Introduction
 ============
 
-.. toctree::
-    :maxdepth: 1
-    :hidden:
-
-    first-use
-
 Here you will find a short overview of SECoP.
 
 Background

@@ -1,6 +1,6 @@
-==============
-Getting Started
-==============
+=================================
+Getting to know the bare protocol
+=================================
 
 Here we want to show you, how to get started with SECoP.
 We will begin by having a look on how to manually interact with a running SEC node.

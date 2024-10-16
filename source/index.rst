@@ -9,8 +9,10 @@ Welcome to SECoP!
     :hidden:
 
     intro/index
+    getting-started/index
     specification/index
     Spec 1.0 <specification/SECoP_Specification_V1.0>
+    howtos/index
 
 .. toctree::
     :maxdepth: 1

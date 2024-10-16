@@ -1,4 +1,0 @@
-('char')
-['ASCII \\ SPACE'#`any char between
-33 and 127`]
-

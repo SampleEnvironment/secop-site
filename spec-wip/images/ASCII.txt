@@ -1,3 +1,0 @@
-('ASCII')
-[ "[\x20-\x7F]"#`any byte with value
-32..127`]

@@ -1,5 +1,0 @@
-[`error-info` ["{" [<! <
- ["exception" ":" 'exception-information']
- ["traceback" ":" 'traceback-information']
- ['custom-name' ":" 'custom error-info']
->*",">] "}"]#`a json-object`]

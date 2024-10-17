@@ -69,31 +69,23 @@ Welcome to SECoP!
    .. grid-item::
 
 .. grid::
-   :gutter: 5
+   :gutter: 4
 
    .. grid-item::
 
       **Inclusive** means that facilities can use this protocol and don’t have to change
-      their work flow (rewrite drivers completely or organize and handle hardware in a
-      specific way to fulfill SECoP requirements).
-
-
-   .. grid-item::
-
-      **Simple** means it should be easy to integrate and to use.
+      their basic work flow.
+      Circulating and integration of equipment will be made easier.
 
    .. grid-item::
 
-      **Self Explaining** means that with SECoP, not only the pure data is transported. It
-      also transports a human and machine readable description, which allows environment control software to configure by itself.
-
-
-   .. grid-item::
-
-      **Metadata**: sample environment related metadata is made available and accessible in a standard form.
+      **Simple** means it should be easy to integrate and to use, by humans and computers,
+      for example using text-based messages instead of binary formats.
 
    .. grid-item::
-      circulating and integration of equipment will be made easier.
+
+      **Self Explaining** means that SECoP transports the data, metadata *and* a human and machine readable
+      description, which allows environment control software to configure itself.
 
 The :doc:`Introduction <intro/index>` section has examples of the protocol, as
 well as example code to get started with writing drivers using one of our

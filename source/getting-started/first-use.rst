@@ -224,10 +224,11 @@ the client which capabilities the module supports.  In this case, it is a
 ``Readable`` which is a module with a ``value`` and a ``status`` that can both
 be read.  Additional capabilities like custom commands or parameters are not
 excluded, this is a minimum set of things the Module has.  For a full
-definition, have a look at the specification.  The ``features`` field is similar
-to the interface classes, but Features are small additions in functionality,
-that can be plugged into any of the interface classes.  The description here can
-again give supplemental information about the module.
+definition, have a look at :ref:`the specification <interface-classes>`.  The
+``features`` field is similar to the interface classes, but Features are small
+additions in functionality, that can be plugged into any of the interface
+classes.  The description here can again give supplemental information about the
+module.
 
 .. code:: json
 
@@ -263,11 +264,14 @@ again give supplemental information about the module.
 
 The ``accessibles`` field lists all parameters that are defined on the module
 and can be accessed over SECoP.  In the block above, you can see ``value`` and
-``status`` two parameters which almost all modules will have.  The value is the
-current value of the module, and the status is a two-element tuple of a status
-code and a message that can give more information about the module's current
-state.  Each parameter has a description and information about data format,
-whether they can be written to, and more.
+``status`` two parameters which almost all modules will have.  The precise
+semantics of all such parameters are defined in :ref:`the specification
+<accessibles>`.
+
+The value is the current value of the module, and the status is a two-element
+tuple of a status code and a message that can give more information about the
+module's current state.  Each parameter has a description and information about
+data format, whether they can be written to, and more.
 
 For the ``heater`` module, most things parallel the one before it, but there are
 some differences:
@@ -339,8 +343,8 @@ message, where we can retrieve the value of a parameter:
 
 We have to specify which ``module`` and ``parameter`` we want to access, and get
 back an answer containing the value and so-called ``qualifiers`` which contain
-additional information.  Here, the only qualifier is ``t`` - the timestamp of the
-read.
+:ref:`additional information <qualifiers>`.  Here, the only qualifier is ``t`` -
+the timestamp of the read.
 
 
 Writing values
@@ -364,8 +368,8 @@ invalid value, we get back an error instead:
 
 As you can see, errors use a different message name
 (``error_<originalmessage>``) and include more information in the data part: an
-error class (which is defined by the specification), an error string giving more
-information, and some qualifiers (in this case, none).
+error class (which is defined by :ref:`the specification <error-reply>`), an
+error string giving more information, and some qualifiers (in this case, none).
 
 
 Running commands

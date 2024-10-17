@@ -28,20 +28,28 @@ For a more detailed breakdown of the process while building an example, have a
 look at e.g. `this tutorial
 <https://forge.frm2.tum.de/public/doc/frappy/html/tutorial_t_control.html>`_.
 
+
 How to get it
 ~~~~~~~~~~~~~
+
 Source
 ------
 
 You can find the source on `GitHub <https://github.com/SampleEnvironment/frappy>`_.
 
-Packages
---------
+PyPI
+----
 
-There are RPM and debian packages built by us.
-
-.. pypi once that has been resolved
+Frappy is available for ``pip install`` etc. as `frappy-core
+<https://pypi.org/project/frappy-core>`_.
 
 Standalone Gui on Windows
 -------------------------
-For easier installation on Windows if you are using just the client, you can find a prebuilt executable `here <https://forge.frm2.tum.de/public/?p=frappy>`_.
+
+For easier installation on Windows if you are using just the client, you can
+find a prebuilt executable `here <https://forge.frm2.tum.de/public/?p=frappy>`_.
+
+..
+   Packages
+   --------
+   There are RPM and debian packages built by us.

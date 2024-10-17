@@ -21,10 +21,12 @@ You need at most three steps to a working SECNode:
     To compose your modules together as parts of a SECNode, you write a simple configuration file.
     List all the modules you want to be part of the SECNode and fill in the required parameters and properties.
 
-3. running the server
+3. Running the server:
     Start the frappy-server and supply your configuration.
 
-For a more detailed breakdown of the process while building an example, have a look at e.g. `this tutorial <https://forge.frm2.tum.de/public/doc/frappy/html/tutorial_t_control.html>`_.
+For a more detailed breakdown of the process while building an example, have a
+look at e.g. `this tutorial
+<https://forge.frm2.tum.de/public/doc/frappy/html/tutorial_t_control.html>`_.
 
 How to get it
 ~~~~~~~~~~~~~
@@ -36,7 +38,7 @@ You can find the source on `GitHub <https://github.com/SampleEnvironment/frappy>
 Packages
 --------
 
-There are RPM and debian packages uilt by us.
+There are RPM and debian packages built by us.
 
 .. pypi once that has been resolved
 

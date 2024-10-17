@@ -24,7 +24,7 @@ from sphinx.highlighting import lexers
 # -- Project information -----------------------------------------------------
 
 project = 'SECoP'
-copyright = '2023, ISSE'
+copyright = '2023-2024, ISSE'
 author = 'ISSE'
 
 root_doc = 'index'

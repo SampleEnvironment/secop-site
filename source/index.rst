@@ -73,19 +73,21 @@ Welcome to SECoP!
 
    .. grid-item::
 
-      **Inclusive** means that facilities can use this protocol and don’t have to change
-      their basic work flow.
-      Circulating and integration of equipment will be made easier.
+      **Inclusive** means that facilities can use this protocol and don’t have
+      to change their basic work flow.  Circulating and integration of equipment
+      will be made easier.
 
    .. grid-item::
 
-      **Simple** means it should be easy to integrate and to use, by humans and computers,
-      for example using text-based messages instead of binary formats.
+      **Simple** means it should be easy to integrate and to use, by humans and
+      computers, for example using text-based messages instead of binary
+      formats.
 
    .. grid-item::
 
-      **Self Explaining** means that SECoP transports the data, metadata *and* a human and machine readable
-      description, which allows environment control software to configure itself.
+      **Self Explaining** means that SECoP transports the data, metadata *and* a
+      human and machine readable description, which allows environment control
+      software to configure itself.
 
 The :doc:`Introduction <intro/index>` section has examples of the protocol, as
 well as example code to get started with writing drivers using one of our
@@ -96,6 +98,9 @@ See the :doc:`Specification <specification/index>` section for the full specific
 In :doc:`Implementations <implementations/index>` you can see the known implementations, which
 cover a wide range of use cases and technologies.
 
-Currently, as part of the project SECoP@HMC, the capabilities around metadata are extended to allow easier interfacing with metadata initiatives working further up the stack.
+From 2022 to 2024, as part of the project SECoP\@HMC, the capabilities around
+metadata were extended to allow easier interfacing with metadata initiatives
+working further up the stack.
 
 .. image:: _static/secophmc.svg
+   :width: 400

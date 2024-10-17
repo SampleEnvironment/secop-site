@@ -11,22 +11,12 @@ Welcome to SECoP!
     intro/index
     getting-started/index
     specification/index
-    Spec 1.0 <specification/SECoP_Specification_V1.0>
     howtos/index
-
-.. toctree::
-    :maxdepth: 1
-    :hidden:
-
     implementations/index
-
-.. toctree::
-    :maxdepth: 1
-    :hidden:
-
+    Spec 1.0 <specification/SECoP_Specification_V1.0>
     contact
     ISSE <https://sampleenvironment.org/>
-    impressum
+    privacy-policy
 
 .. grid::
 

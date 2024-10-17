@@ -86,7 +86,7 @@ html_theme_options = {
     },
     'secondary_sidebar_items': ['page-toc', 'sourcelink'],
     #"announcement": "<em>Important</em> announcement!",
-    'header_links_before_dropdown': 4,
+    'header_links_before_dropdown': 5,
     # links with icons to the right of the search icon:
     #'external_links': [
     #    {}

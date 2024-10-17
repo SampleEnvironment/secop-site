@@ -361,4 +361,10 @@ The other commands won't be discussed here, but as a pointer have a look at ``ac
 Letting the computer do it for you
 ----------------------------------
 
-... clients
+Of course, the point of this protocol is to automate the communication with
+your sample environment hardware. It would defeat the purpose if you sit at the
+instrument all day, typing commands. Clients that can consume the description
+can do the work for you. For some existing implementations, :doc:`have a look
+at the implementations <../implementations/index>` or their respective
+:doc:`starting guides <../getting-started/index>`. Or if you want to write your
+own, please tell us, we'd love to hear about it!

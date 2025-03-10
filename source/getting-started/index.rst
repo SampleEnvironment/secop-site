@@ -9,3 +9,4 @@ Getting Started
     with-frappy
     with-shall
     with-octopy
+    with-secop-ophyd

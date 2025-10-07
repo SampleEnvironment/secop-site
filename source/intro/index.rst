@@ -7,7 +7,7 @@ Here you will find a short overview of SECoP.
 Background
 ~~~~~~~~~~
 
-SECoP developed out of the need of multiple large scale facilities in the neutron science world to make equipment easier to share between facilities. This should not deter you from using it, as it's flexibility allows for a wide range of use cases.
+SECoP developed out of the need of multiple large scale facilities in the neutron science world to make equipment easier to share between facilities. This should not deter you from using it, as its flexibility allows for a wide range of use cases.
 
 .. metadata, why not x?, semantics, not just syntax, sine2020/hmc, machine/human readable
    talk slide 7

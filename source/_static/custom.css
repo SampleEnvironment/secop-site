@@ -5,3 +5,7 @@
 .logo__image.only-dark {
   filter: invert(1)
 }
+
+dl[class]:not(.option-list, .field-list, .footnote, .glossary, .simple) {
+    margin-bottom: 1em;
+}

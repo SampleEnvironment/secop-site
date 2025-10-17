@@ -15,16 +15,16 @@ from sphinx.highlighting import lexers
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+
+import os
+import sys
+sys.path.insert(0, os.path.abspath('..'))
 
 
 # -- Project information -----------------------------------------------------
 
 project = 'SECoP'
-copyright = '2023-2024, ISSE'
+copyright = '2023-2025, ISSE'
 author = 'ISSE'
 
 root_doc = 'index'
@@ -33,6 +33,8 @@ root_doc = 'index'
 release = '1.0'
 
 # -- General configuration ---------------------------------------------------
+
+default_role = 'obj'
 
 highlight_language = 'secop'
 
@@ -44,6 +46,7 @@ extensions = [
     'sphinx.ext.extlinks',
     'sphinx_design',
     'sphinx_favicon',
+    'secop_sphinx',
 ]
 
 todo_include_todos = True
@@ -85,6 +88,7 @@ html_theme_options = {
         'image_dark': 'logo.svg',
     },
     'secondary_sidebar_items': ['page-toc', 'sourcelink'],
+    'show_nav_level': 2,
     #"announcement": "<em>Important</em> announcement!",
     'header_links_before_dropdown': 5,
     # links with icons to the right of the search icon:

@@ -84,7 +84,7 @@ class Message(PyVariable):
             signode += addnodes.desc_name(name, name)
         else:
             reqtype = m.group(1)
-            cls = 'primary' if reqtype == 'request' else 'secondary'
+            cls = 'danger' if reqtype == 'request' else 'success'
             signode += addnodes.desc_sig_operator(
                 reqtype, reqtype,
                 classes=['sd-badge', f'sd-bg-{cls}', f'sd-bg-text-{cls}'])

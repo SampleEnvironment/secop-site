@@ -123,6 +123,15 @@ favicons = [
 ]
 
 
+_linetokens = (Token.Whitespace,
+               Token.Keyword,
+               Token.Whitespace,
+               Token.String,
+               Token.Name,
+               Token.Whitespace,
+               using(JsonLexer))
+
+
 class SECoPLexer(RegexLexer):
     name = 'secop'
     flags = re.MULTILINE
@@ -130,36 +139,21 @@ class SECoPLexer(RegexLexer):
     tokens = {
         'root': [
             # special: *IDN? and reply
-            (r'(>)( +)(\*IDN\?)',
-             bygroups(Token.Generic.Prompt, Token.Whitespace, Token.Keyword)),
-            (r'(<)( +)(ISSE.*)',
-             bygroups(Token.Generic.Prompt, Token.Whitespace, Token.String)),
+            (r'([>→])( +)(\*IDN\?)',
+             bygroups(Token.Generic.Deleted, Token.Whitespace, Token.Keyword)),
+            (r'([<←])( +)(ISSE.*)',
+             bygroups(Token.Generic.Inserted, Token.Whitespace, Token.String)),
             # generic request/reply with JSON reply potentially broken into
             # multiple lines
-            (r'(?s)([><])( +)(\S+)(?:( )(\S+)(:\w+)?)?( )(\{)',
-             bygroups(
-                 Token.Generic.Prompt,
-                 Token.Whitespace,
-                 Token.Keyword,
-                 Token.Whitespace,
-                 Token.String,
-                 Token.Name,
-                 Token.Whitespace,
-                 using(JsonLexer)
-             ),
-             'json'),
+            (r'(?s)([>→])( +)(\S+)(?:( )(\S+)(:\w+)?)?( )(\{)',
+             bygroups(Token.Generic.Deleted, *_linetokens), 'json'),
+            (r'(?s)([<←])( +)(\S+)(?:( )(\S+)(:\w+)?)?( )(\{)',
+             bygroups(Token.Generic.Inserted, *_linetokens), 'json'),
             # generic single line request/reply
-            (r'([><])( +)(\S+)(?:( )(\S+)(:\w+)?)?(?:( )(.*?))?$',
-             bygroups(
-                 Token.Generic.Prompt,
-                 Token.Whitespace,
-                 Token.Keyword,
-                 Token.Whitespace,
-                 Token.String,
-                 Token.Name,
-                 Token.Whitespace,
-                 using(JsonLexer)
-             )),
+            (r'([>→])( +)(\S+)(?:( )(\S+)(:\w+)?)?(?:( )(.*?))?$',
+             bygroups(Token.Generic.Deleted, *_linetokens)),
+            (r'([<←])( +)(\S+)(?:( )(\S+)(:\w+)?)?(?:( )(.*?))?$',
+             bygroups(Token.Generic.Inserted, *_linetokens)),
             # just an ellipsis
             (r'\.\.\.', Token.Comment),
             # comment

@@ -9,3 +9,19 @@
 dl[class]:not(.option-list, .field-list, .footnote, .glossary, .simple) {
     margin-bottom: 1em;
 }
+
+div.highlight span.gd, div.highlight span.gi {
+    display: inline-block;
+    padding: 0 4px;
+    margin: 2px;
+}
+
+div.highlight span.gd {
+    background-color: var(--sd-color-danger);
+    color: var(--sd-color-danger-bg) !important;
+}
+
+div.highlight span.gi {
+    background-color: var(--sd-color-success);
+    color: var(--sd-color-success-bg) !important;
+}

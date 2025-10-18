@@ -1,14 +1,10 @@
-# This is a basic workflow to help you get started with Actions
-
 name: deploy_sphinx
 
 permissions:
   id-token: write
   pages: write
 
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "master" branch
   push:
     branches: [ "master" ]
   # dispatch from the main repo, needs PAT with access to both repos
@@ -21,17 +17,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
       - name: Checkout spec repo
         uses: actions/checkout@v4
         with:
           repository: SampleEnvironment/SECoP
           path: ./SECoP
-      - name: copy spec into correct folder
+      - name: copy over spec
         run: cp -r ./SECoP/protocol/specification/* source/specification
-      - name: copy 1-0 spec into correct folder
-        run: cp ./SECoP/protocol/SECoP_Specification_V1.0.rst source/specification/SECoP_Specification_V1.0.rst
+      - name: process rfcs
+        run: python process_rfcs.py ./SECoP/rfcs source/rfcs
       - name: Import secop-img SVGs
         uses: robinraju/release-downloader@v1.10
         with:

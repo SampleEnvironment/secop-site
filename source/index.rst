@@ -13,6 +13,7 @@ Welcome to SECoP!
     specification/index
     howtos/index
     implementations/index
+    rfcs/index
     contact
     ISSE <https://sampleenvironment.org/>
     privacy-policy

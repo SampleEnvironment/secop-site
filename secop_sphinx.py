@@ -1,13 +1,7 @@
 import re
 
-from docutils import nodes
-
 from sphinx import addnodes
 from sphinx.domains.python import PyFunction, PyVariable, PyObject, PyClasslike
-from sphinx.util.docutils import ReferenceRole
-from sphinx.util.nodes import split_explicit_title
-
-REPO_BASE = 'https://github.com/SampleEnvironment/SECoP/blob/master/'
 
 
 class Property(PyVariable):
@@ -105,27 +99,6 @@ class Message(PyVariable):
         return '%s (protocol message)' % name_cls[0]
 
 
-class SecopRFC(ReferenceRole):
-    def run(self):
-        target_id = 'index-%s' % self.env.new_serialno('index')
-        entries = [('single', 'SECoP RFC; RFC %s' % self.target,
-                    target_id, '', None)]
-
-        index = addnodes.index(entries=entries)
-        target = nodes.target('', '', ids=[target_id])
-        self.inliner.document.note_explicit_target(target)
-
-        refuri = REPO_BASE + f'rfcs/RFC-{self.target}.rst'
-        reference = nodes.reference('', '', internal=False, refuri=refuri)
-        if self.has_explicit_title:
-            reference += nodes.strong(self.title, self.title)
-        else:
-            num = self.target.split('-')[0]
-            title = f'SECoP RFC {num}'
-            reference += nodes.strong(title, title)
-        return [index, target, reference], []
-
-
 def setup(app):
     app.add_directive('node-property', Property)
     app.add_directive('mod-property', Property)
@@ -137,5 +110,4 @@ def setup(app):
     app.add_directive('feature', Feature)
     app.add_directive('message', Message)
     app.add_directive('errorclass', ErrorClass)
-    app.add_role('secop-rfc', SecopRFC())
     return {'parallel_read_safe': True, 'version': '0.1.0'}

@@ -16,20 +16,21 @@ class Property(PyVariable):
         signode.insert(0, addnodes.desc_addname('', 'Property',
                                                 addnodes.desc_sig_space()))
         if self.name == 'node-property':
-            fullname = 'node:' + fullname
+            fullname = 'node.' + fullname
         elif self.name == 'mod-property':
-            fullname = 'mod:' + fullname
+            fullname = 'mod.' + fullname
         return fullname, prefix
 
     def get_index_text(self, modname, name_cls):
+        name = name_cls[0].rpartition('.')[2]
         if self.name == 'node-property':
-            return '%s (node property)' % name_cls[0]
+            return f'{name} (node property)'
         elif self.name == 'mod-property':
-            return '%s (module property)' % name_cls[0]
+            return f'{name} (module property)'
         elif self.name == 'acc-property':
-            return '%s (accessible property)' % name_cls[0]
+            return f'{name} (accessible property)'
         else:
-            return '%s (property)' % name_cls[0]
+            return f'{name} (property)'
 
 
 class Parameter(PyVariable):

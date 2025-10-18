@@ -35,6 +35,7 @@ release = '1.0'
 # -- General configuration ---------------------------------------------------
 
 default_role = 'obj'
+nitpicky = True
 
 highlight_language = 'secop'
 

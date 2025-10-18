@@ -17,9 +17,8 @@ Talking to a SEC node
 
 So you have never used SECoP, and want to interact with a node?  For exploring
 the protocol, all you need is a program that can talk tcp or serial, depending
-on your device.  Connect to your device and send the :ref:`identification
-message <message-identification>` ``*IDN?`` to start communication ('>' and '<'
-show who is sending the message):
+on your device.  Connect to your device and send the `*IDN?` identification
+message to start communication ('>' and '<' show who is sending the message):
 
 .. code::
 
@@ -30,7 +29,7 @@ speak:
 
 .. code::
 
-    < ISSE,SECoP,V2019-09-16,v1.0
+    < ISSE,SECoP,,v2.0
 
 Great!  So we know that we are talking to something that knows SECoP, but we do
 not know yet what we are talking to.  That is what we will find out with next
@@ -265,8 +264,8 @@ module.
 The ``accessibles`` field lists all parameters that are defined on the module
 and can be accessed over SECoP.  In the block above, you can see ``value`` and
 ``status`` two parameters which almost all modules will have.  The precise
-semantics of all such parameters are defined in :ref:`the specification
-<accessibles>`.
+semantics of all such parameters are defined in :doc:`the specification
+</specification/accessibles>`.
 
 The value is the current value of the module, and the status is a two-element
 tuple of a status code and a message that can give more information about the
@@ -333,8 +332,8 @@ knowledge, we can interact with specific parts of it.
 Reading values
 ^^^^^^^^^^^^^^
 
-The most basic command to access a module is the :ref:`read <message-read>`
-message, where we can retrieve the value of a parameter:
+The most basic command to access a module is the `read` message, where we can
+retrieve the value of a parameter:
 
 .. code::
 
@@ -351,7 +350,7 @@ Writing values
 ^^^^^^^^^^^^^^
 
 If we want to set a value, for example the ``_maxheaterpower`` of the ``heater``
-we can use the :ref:`change <message-change>` message:
+we can use the `change` message:
 
 .. code::
 
@@ -375,7 +374,7 @@ error string giving more information, and some qualifiers (in this case, none).
 Running commands
 ^^^^^^^^^^^^^^^^
 
-Running a command is done with the :ref:`do <message-do>` message:
+Running a command is done with the `do` message:
 
 .. code::
 
@@ -400,8 +399,8 @@ have a look at the status.  It will go ``BUSY`` until the change is done.  When
 it returns to ``IDLE`` then the action is finished.
 
 The other commands won't be discussed here, but as a pointer have a look at
-:ref:`activate <message-activate>` which enables asynchronous mode.  That gives
-you a stream of updates for all parameters of a SEC node without polling.
+`activate` which enables asynchronous mode.  That gives you a stream of updates
+for all parameters of a SEC node without polling.
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

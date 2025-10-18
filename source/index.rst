@@ -13,7 +13,6 @@ Welcome to SECoP!
     specification/index
     howtos/index
     implementations/index
-    Spec 1.0 <specification/SECoP_Specification_V1.0>
     contact
     ISSE <https://sampleenvironment.org/>
     privacy-policy

@@ -49,7 +49,7 @@ extensions = [
 todo_include_todos = True
 
 extlinks = {
-    'issue' : ('https://github.com/SampleEnvironment/SECoP/blob/master/protocol/issues/%s.rst',
+    'issue' : ('https://github.com/SampleEnvironment/SECoP/blob/master/issues/%s.rst',
     'SECoP Issue %s')
 }
 

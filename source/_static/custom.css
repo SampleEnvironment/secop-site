@@ -6,7 +6,7 @@
   filter: invert(1)
 }
 
-dl[class]:not(.option-list, .field-list, .footnote, .glossary, .simple) {
+dl[class]:not(.option-list, .field-list, .footnote, .glossary, .simple, .message) {
     margin-bottom: 1em;
 }
 

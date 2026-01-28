@@ -7,7 +7,7 @@ destdir = pathlib.Path(sys.argv[2])
 rfcs = []
 
 for rfc in sourcedir.glob('RFC-*.rst'):
-    if rfc.name.startswith('RFC-000'):
+    if rfc.name.startswith(('RFC-000', 'RFC-template')):
         continue
 
     n = rfc.name.split('-')[1]

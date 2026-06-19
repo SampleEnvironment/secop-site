@@ -16,7 +16,7 @@ Controlled By
    parameter), as described in the companion tutorial on that topic.
 
 Introduction
-============
+------------
 
 So far we have treated SECoP modules as if each one independently owned
 its own little piece of hardware: a module has a ``value``, maybe a
@@ -44,7 +44,7 @@ actuator, and right now, *this* one is the one actually steering it."
 That is exactly what ``controlled_by`` and ``control_active`` are for.
 
 Why is this needed at all?
-============================
+--------------------------
 
 Without an explicit coupling mechanism, the situations above would be
 invisible to the ECS, with consequences that range from confusing to
@@ -77,7 +77,7 @@ write to switch which module is in control -- following the very same
 handshake rules already familiar from ``change`` and ``do``.
 
 The two parameters involved
-==============================
+---------------------------
 
 ``controlled_by`` -- "who is driving me?"
     A read-only parameter of datatype ``enum``, whose possible values
@@ -100,7 +100,7 @@ These two parameters are normally used together, on a *pair* of
 coupled modules, to describe the two sides of the same coin.
 
 Case 1: a controller and a controlled actuator
-==================================================
+-----------------------------------------------
 
 This is the temperature/heater example. Module ``T`` (temperature) can
 control module ``heaterpower`` (heater power). They are never both
@@ -125,7 +125,7 @@ control module ``heaterpower`` (heater power). They are never both
    reading ``T:status`` will typically reflect this.
 
 How control is taken
------------------------
+~~~~~~~~~~~~~~~~~~~~~
 
 The rule given by the specification is simple and symmetric: **whichever
 module receives a target change (or a** ``go`` **command, if present)
@@ -149,7 +149,7 @@ change, and must be communicated -- via ``update`` events to all
 activated clients -- before the direct reply is sent.
 
 Explicitly releasing control: ``control_off``
--------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Setting a module's ``target`` always turns its own control back *on*.
 But what if there is no controlling module to hand off to -- for
@@ -166,7 +166,7 @@ temperature loop, or cutting drive current for a motor.
    :width: 100%
 
 A worked example
--------------------
+~~~~~~~~~~~~~~~~~
 
 Both connections below have already sent ``activate``; qualifiers are
 abbreviated as ``{...}``::
@@ -209,7 +209,7 @@ handshake tutorial) describes whether *that* module is currently busy
 doing so.
 
 Case 2: two mutually exclusive writable modules
-===================================================
+------------------------------------------------
 
 The second pattern in the specification has no single "controller"
 module; instead, two peer modules, ``I`` (current) and ``V`` (voltage)
@@ -259,7 +259,7 @@ at 12 V; any value still present in ``I:target`` is simply not acted
 upon until ``I`` is given a new target of its own.
 
 What if more than two modules share one controller?
-========================================================
+----------------------------------------------------
 
 The specification notes that a single controlling module may need to
 arbitrate between *several* controlled modules at once -- for example,
@@ -277,7 +277,7 @@ device-specific parameters layered on top to describe richer
 arbitration logic.
 
 Why this fits the rest of SECoP's design
-============================================
+-----------------------------------------
 
 It is worth noting what SECoP does *not* introduce here: there is no
 new message type, no new handshake step, and no special "take control"
@@ -299,7 +299,7 @@ layered on top of the same small set of messages introduced for the
 basic handshake.
 
 Summary
-=======
+-------
 
 * Two (or more) SECoP modules can share a single physical actuator.
   SECoP makes this explicit via the read-only parameters
@@ -322,7 +322,7 @@ Summary
   top of this basic mechanism.
 
 Further reading
-================
+---------------
 
 * `4.5. Parameters and commands -- Coupled modules
   <https://sampleenvironment.github.io/secop-site/specification/accessibles.html#coupled-modules>`_

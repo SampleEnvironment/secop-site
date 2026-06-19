@@ -6,7 +6,7 @@ Guides
     :maxdepth: 1
 
     limits
-    controlled_by
+    coupled_modules
     meaning
 
 HowTo's, tips and more documentation.

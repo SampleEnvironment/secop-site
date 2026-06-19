@@ -1,5 +1,5 @@
-Controlled By
-=============
+Coupled Modules - Understanding SECoP Inter-Module Interactions
+===============================================================
 
 
 .. note::

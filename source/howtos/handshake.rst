@@ -13,7 +13,7 @@ Handshake
    cannot be completed instantly.
 
 Introduction
-============
+------------
 
 SECoP (Sample Environment Communication Protocol) is a line-based,
 request/reply protocol used to connect sample environment equipment
@@ -36,7 +36,7 @@ request and started working on it, but I am not finished yet." That
 well-defined way is what this tutorial calls the **handshake**.
 
 Why is a handshake needed at all?
-==================================
+----------------------------------
 
 Imagine a temperature controller module ``mf`` (a magnet, in this case)
 with a ``target`` parameter. A naive protocol might work like this:
@@ -73,7 +73,7 @@ completion is communicated *separately and asynchronously*, the same way
 status changes always are.
 
 The two messages involved
-==========================
+--------------------------
 
 The handshake described here applies to both ways of triggering an
 action in SECoP:
@@ -96,7 +96,7 @@ the running example, since setting a ``target`` is the most common case,
 and then shows ``do`` separately.
 
 The ``status`` parameter
-=========================
+-------------------------
 
 Before looking at the handshake itself, it helps to know the parameter
 that carries the "are we done yet?" information: ``status``.
@@ -122,7 +122,7 @@ you can trust the current value", and **300 (BUSY)** means "an action
 is in progress, the main value is still moving towards its target."
 
 The handshake, step by step
-============================
+-----------------------------
 
 The specification gives a precise, mandatory sequence of events for "the
 correct handling of side-effects" whenever an ECS triggers an action via
@@ -166,7 +166,7 @@ still queued up behind it. Updates always come first, the direct reply
 to the request comes last.
 
 Why "BUSY before the reply"?
------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Note the order in step 3: the status update announcing BUSY is sent
 *before* the hardware is actually told to move, and well before the
@@ -180,7 +180,7 @@ events out of order, *must* query the status parameter synchronously to
 avoid missing a real, but momentarily un-announced, BUSY state.
 
 A first example: setting a magnetic field target
-==================================================
+-------------------------------------------------
 
 This is the canonical example from the specification: a magnet module
 ``mf`` that needs to ramp its field to a new target. The connection has
@@ -237,7 +237,7 @@ Let's connect this to the five steps above:
   first waiting for a previous one to clear.
 
 Two clients at once
---------------------
+~~~~~~~~~~~~~~~~~~~~
 
 Because *all* clients with activated updates receive the same BUSY/IDLE
 transitions, a second client that did nothing at all still sees::
@@ -259,7 +259,7 @@ activated client, regardless of who triggered them.
    :width: 100%
 
 A second example: a quick, non-blocking command
-==================================================
+------------------------------------------------
 
 Not every ``do`` needs to go through BUSY. If an action genuinely
 finishes within a communication round-trip, steps 2 and 3 collapse and
@@ -281,7 +281,7 @@ same in structure::
     < done t1:setpid [[42, "control active"], {"t": 123456789.2}]
 
 A third example: when the request is rejected outright
-=========================================================
+-------------------------------------------------------
 
 Step 2 of the handshake allows the SEC node to refuse a request before
 anything else happens. No BUSY transition, no update -- just an
@@ -305,7 +305,7 @@ explicitly allows for this case: the status may already show BUSY, and
 the direct reply to the request can still be an error.
 
 Why polling alone would not be enough
-=======================================
+--------------------------------------
 
 A client that has *not* activated asynchronous updates can still
 implement a correct handshake, just less efficiently: it sends
@@ -322,7 +322,7 @@ specific request" -- gives both efficiency and the ability for several
 independent clients to stay synchronised.
 
 Summary
-=======
+-------
 
 * Reading a value or issuing most commands in SECoP is a plain
   request/reply exchange.
@@ -343,7 +343,7 @@ Summary
   changing state.
 
 Further reading
-================
+---------------
 
 * `read, change: Read and write parameters
   <https://sampleenvironment.github.io/secop-site/specification/messages/readwrite.html>`_

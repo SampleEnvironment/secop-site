@@ -1,4 +1,5 @@
 build/
+buildsrc/
 .venv/
 __pycache__/
 source/rfcs/[0-9]*

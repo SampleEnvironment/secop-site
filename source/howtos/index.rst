@@ -8,5 +8,6 @@ Guides
     limits
     controlled_by
     meaning
+    check_message
 
 HowTo's, tips and more documentation.

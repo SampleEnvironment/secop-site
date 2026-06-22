@@ -12,8 +12,8 @@ Coupled Modules - Understanding SECoP Inter-Module Interactions
    two modules that compete for, or hand off, control of a piece of
    hardware, expressed through the ``controlled_by`` and
    ``control_active`` parameters. This tutorial assumes familiarity with
-   the SECoP handshake (``change``/``do``, ``update``, and the ``status``
-   parameter), as described in the companion tutorial on that topic.
+   the SECoP handshake (`change`/`do`, `update`, and the `status`
+   parameter), as described in the :doc:`companion tutorial <handshake>`.
 
 Introduction
 ------------
@@ -80,21 +80,21 @@ The two parameters involved
 ---------------------------
 
 ``controlled_by`` -- "who is driving me?"
-    A read-only parameter of datatype ``enum``, whose possible values
+    A read-only parameter of datatype :ref:`enum`, whose possible values
     are the names of other modules, plus the special value ``"self"``
     (which must be enum value ``0``). A module that has this parameter
     is declaring: "my behaviour may currently be dictated by one of
     these other named modules, instead of by my own ``target``."
 
 ``control_active`` -- "am I the one actually in control?"
-    A read-only boolean on a *Drivable* or *Writable*
+    A read-only boolean on a `Drivable` or `Writable`
     module. When ``true``, the module's own control mechanism is
     trying to bring its ``value`` to its ``target`` -- this is the
     normal, "business as usual" case, and is also the implicit default
     for a module that does not even have this parameter. When
     ``false``, that control mechanism is switched off and the module's
     own ``target`` is *not* considered any more; the module behaves
-    like a plain *Readable* until control is handed back to it.
+    like a plain `Readable` until control is handed back to it.
 
 These two parameters are normally used together, on a *pair* of
 coupled modules, to describe the two sides of the same coin.
@@ -128,7 +128,7 @@ How control is taken
 ~~~~~~~~~~~~~~~~~~~~~
 
 The rule given by the specification is simple and symmetric: **whichever
-module receives a target change (or a** ``go`` **command, if present)
+module receives a target change (or a** `go` **command, if present)
 takes over control.**
 
 * Writing ``change T:target ...`` (or sending ``go`` to ``T``) makes
@@ -154,10 +154,10 @@ Explicitly releasing control: ``control_off``
 Setting a module's ``target`` always turns its own control back *on*.
 But what if there is no controlling module to hand off to -- for
 instance, a temperature loop with no heater module exposed at all, or
-one where the heater happens not to be a *Writable*? For this
-case, a module may offer the optional ``control_off`` command, whose
-only job is to set ``control_active`` to ``false`` directly. More
-generally, ``control_off`` can be thought of as putting the module into
+one where the heater happens not to be a `Writable`? For this
+case, a module may offer the optional `control_off` command, whose
+only job is to set `control_active` to ``false`` directly. More
+generally, `control_off` can be thought of as putting the module into
 an "energy saving" state: switching off active heating/cooling for a
 temperature loop, or cutting drive current for a motor.
 
@@ -285,10 +285,10 @@ command in the general case (only the optional ``control_off`` adds a
 new command, and only where there is no module to hand control back
 to). Coupling is expressed entirely through:
 
-* two ordinary, read-only parameters (``controlled_by``,
-  ``control_active``) that any generic SECoP client already knows how
-  to read, poll, or subscribe to via ``activate``, and
-* the existing ``change``/``go`` handshake, whose "side effects before
+* two ordinary, read-only parameters (`controlled_by`,
+  `control_active`) that any generic SECoP client already knows how
+  to read, poll, or subscribe to via `activate`, and
+* the existing `change`/`go` handshake, whose "side effects before
   reply" rule is simply asked to also cover these two parameters
   whenever a target change causes a hand-over of control.
 
@@ -324,11 +324,7 @@ Summary
 Further reading
 ---------------
 
-* `4.5. Parameters and commands -- Coupled modules
-  <https://sampleenvironment.github.io/secop-site/specification/accessibles.html#coupled-modules>`_
-* `4.4. Interface classes (Readable, Writable, Drivable)
-  <https://sampleenvironment.github.io/secop-site/specification/classes.html>`_
-* `read, change: Read and write parameters
-  <https://sampleenvironment.github.io/secop-site/specification/messages/readwrite.html>`_
-* `SECoP Issue 059: set_mode and mode instead of some commands
-  <https://github.com/SampleEnvironment/SECoP/blob/master/issues/059%20set_mode%20and%20mode%20instead%20of%20some%20commands.rst>`_
+* :doc:`/specification/accessibles` — parameters and commands, including coupled modules
+* :ref:`interface-classes`
+* :doc:`/specification/messages/readwrite`
+* :issue:`059 set_mode and mode instead of some commands`

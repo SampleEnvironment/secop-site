@@ -34,7 +34,7 @@ The ``meaning`` property provides semantic classification of the physical quanti
 relationships to the sample or broader experimental setup, and links to formal vocabularies or ontologies for precise definitions.
 
 The ``meaning`` property does NOT replace the :obj:`description <description>` field, because human-readable context is still needed; the 
-:obj:`datainfo <datainfo>` field, because type information and units remain separate; or interface classes, which define functional capabilities.
+:obj:`datainfo <datainfo>` field, because type information and units remain separate; or :ref:`interface classes <interface-classes>`, which define functional capabilities.
 
 Core Explanation
 ----------------
@@ -152,7 +152,7 @@ Applied to a module in its descriptive data, providing semantic information abou
             "importance": 30,
             "belongs_to": "sample"
           },
-          "accessibles": { ... }
+          "accessibles": {}
         }
       }
     }
@@ -205,7 +205,7 @@ Common Pitfalls
 
 **Wrong importance values**: Stay within the ``[0, 50]`` range and use values that represent the actual equipment hierarchy.
 
-**Regulation without Writable**: Modules with ``_regulation`` functions must have at least the ``Writable`` interface class.
+**Regulation without Writable**: Modules with ``_regulation`` functions must have at least the `Writable` interface class.
 
 Examples
 --------

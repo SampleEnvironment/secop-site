@@ -64,8 +64,8 @@ This is simple, but it is a poor design for a control system:
   cannot express "accepted, started, then failed *during* the action" as
   distinct from "rejected immediately."
 
-SECoP solves all four problems with a single mechanism: a parameter
-called ``status``, an asynchronous ``update`` event, and a fixed sequence
+SECoP solves all four problems with a single mechanism: a `status` parameter
+(see :ref:`status-codes`), an asynchronous `update` event, and a fixed sequence
 of steps that every SEC node implementation must follow whenever it
 starts something that takes a while. The request is acknowledged
 *quickly* (a "yes, I will do this" or "no, I refuse"), while the actual
@@ -80,13 +80,13 @@ action in SECoP:
 
 ``change`` -- Writing to a parameter
     ``change <module>:<parameter> <value>`` is used to set a parameter,
-    most commonly the ``target`` parameter of a *Writable* or *Drivable*
+    most commonly the ``target`` parameter of a `Writable` or `Drivable`
     module. The successful reply is ``changed``; the error reply is
     ``error_change``.
 
 ``do`` -- Executing a command
     ``do <module>:<command> [<argument>]`` triggers an action that is not
-    simply "set a value", such as ``stop``, ``go``, or a custom command
+    simply "set a value", such as `stop`, `go`, or a custom command
     like ``setpid``. The successful reply is ``done``; the error reply is
     ``error_do``.
 
@@ -99,7 +99,7 @@ The ``status`` parameter
 -------------------------
 
 Before looking at the handshake itself, it helps to know the parameter
-that carries the "are we done yet?" information: ``status``.
+that carries the "are we done yet?" information: `status` (see :ref:`status-codes`).
 
 ``status`` is a tuple of an enum code and a human-readable string, e.g.
 ``[300, "ramping field"]``. The integer code is built from a small number
@@ -184,7 +184,7 @@ A first example: setting a magnetic field target
 
 This is the canonical example from the specification: a magnet module
 ``mf`` that needs to ramp its field to a new target. The connection has
-already sent ``activate``, so it receives asynchronous ``update`` events
+already sent `activate`, so it receives asynchronous `update` events
 (qualifiers such as the timestamp are abbreviated as ``{...}`` below for
 readability).
 
@@ -290,11 +290,11 @@ immediate error reply::
     > change t:target -9
     < error_change t:target ["RangeError", "requested value (-9) is outside limits (0..300)", {}]
 
-Other relevant error classes for this situation include ``IsBusy`` (the
+Other relevant :ref:`error classes <error-classes>` for this situation include `IsBusy` (the
 module is already busy with a previous action and cannot accept a new
-target yet) and ``ReadOnly`` (the parameter cannot be written to at
+target yet) and `ReadOnly` (the parameter cannot be written to at
 all). These are all *persisting* or *retryable* errors as classified by
-the specification -- ``IsBusy``, for instance, is explicitly retryable:
+the specification -- `IsBusy`, for instance, is explicitly retryable:
 the same request, sent again once the module has returned to IDLE, may
 well succeed.
 
@@ -345,15 +345,9 @@ Summary
 Further reading
 ---------------
 
-* `read, change: Read and write parameters
-  <https://sampleenvironment.github.io/secop-site/specification/messages/readwrite.html>`_
-* `do: Execute commands
-  <https://sampleenvironment.github.io/secop-site/specification/messages/commands.html>`_
-* `update: Events from the node
-  <https://sampleenvironment.github.io/secop-site/specification/messages/update.html>`_
-* `activate, deactivate: Control events
-  <https://sampleenvironment.github.io/secop-site/specification/messages/activation.html>`_
-* `4.5. Parameters and commands (status codes)
-  <https://sampleenvironment.github.io/secop-site/specification/accessibles.html#status-codes>`_
-* `error_*: Error replies
-  <https://sampleenvironment.github.io/secop-site/specification/messages/errors.html>`_
+* :doc:`/specification/messages/readwrite`
+* :doc:`/specification/messages/commands`
+* :doc:`/specification/messages/update`
+* :doc:`/specification/messages/activation`
+* :ref:`status-codes`
+* :ref:`error-reply`

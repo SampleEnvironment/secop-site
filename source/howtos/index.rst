@@ -6,8 +6,8 @@ Guides
     :maxdepth: 1
 
     limits
-    controlled_by
     handshake
+    coupled_modules
     meaning
     check_message
 

@@ -4,11 +4,7 @@ Coupled Modules - Understanding SECoP Inter-Module Interactions
 
 .. note::
 
-   This tutorial is based on the SECoP protocol specification published by
-   the International Society for Sample Environment (ISSE), available at
-   https://github.com/SampleEnvironment/SECoP and
-   https://sampleenvironment.github.io/secop-site/specification/index.html.
-   It focuses on a single concept: how SECoP describes *coupling* between
+   This tutorial focuses on a single concept: how SECoP describes *coupling* between
    two modules that compete for, or hand off, control of a piece of
    hardware, expressed through the ``controlled_by`` and
    ``control_active`` parameters. This tutorial assumes familiarity with

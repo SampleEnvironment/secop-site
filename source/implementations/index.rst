@@ -1,6 +1,6 @@
-===============
-Implementations
-===============
+=====
+Tools
+=====
 
 .. toctree::
     :maxdepth: 1
@@ -12,13 +12,15 @@ Implementations
     microsecop
 
 
-..
-  Frappy <https://github.com/SampleEnvironment/frappy>
-  Octopy <https://gitlab.esss.lu.se/mesi/octopy>
-  SHALL <https://github.com/SampleEnvironment/SHALL>
+The SECoP ecosystem contains quite a few different tools to create, connect to,
+and visualize SECoP enabled hardware.
 
-Here is a list of known implementations. For more information, have a look at
-their respective pages.
+
+Implementations
+---------------
+
+These packages implement the full SECoP protocol and provide both server and
+client libraries.
 
 
 SHALL
@@ -35,21 +37,22 @@ Frappy
 ~~~~~~
 
 :doc:`Frappy <frappy>` is a Python-based framework that provides a basis for
-constructing SECNodes.
-The aim is for you to only program the parts relevant to communication with your
-hardware, and letting the framework handle everything else.
-Maybe you do not even need to code, since we have already written some drivers
-that you can also use!
-It also comes with a graphical client out of the box.
+constructing SECNodes.  The aim is for you to only program the parts relevant to
+communication with your hardware, and letting the framework handle everything
+else.  Maybe you do not even need to code, since we have already written some
+drivers that you can also use.
+
+It also comes with a client libraries and a ready graphical client out of the
+box.
 
 
 Octopy
 ~~~~~~
 
-:doc:`Octopy <octopy>` is SECoP in a publish/subscribe, topics based environment:
-an industrial IOT centered solution with an EPICS connection.
-It builds its SECoP infrastructure upon MQTT and provides interfaces for easy
-configuration like Node-red.
+:doc:`Octopy <octopy>` is SECoP in a publish/subscribe, topics based
+environment: an industrial IOT centered solution with an EPICS connection.  It
+builds its SECoP infrastructure upon MQTT and provides interfaces for easy
+configuration like Node-RED.
 
 
 µSECoP
@@ -58,3 +61,48 @@ configuration like Node-red.
 :doc:`µSECoP <microsecop>` is an early-stage Rust implementation intended for
 embedded usage, e.g. in microcontollers. There are existing examples for the
 Esp32, the RP2040, and the Stm32.
+
+
+Clients
+-------
+
+These packages are dedicated clients to connect to SECoP nodes, or can use SECoP
+among other options.
+
+Secant
+~~~~~~
+
+
+NICOS
+~~~~~
+
+The `NICOS instrument control system <https://nicos-controls.org/>`_ has
+built-in support for controlling SECoP, using frappy as a library to connect to
+SEC nodes and present their modules as NICOS devices.
+
+
+secop-ophyd
+~~~~~~~~~~~
+
+
+Other tools
+-----------
+
+secop-checker
+~~~~~~~~~~~~~
+
+`secop-checker <https://github.com/SampleEnvironment/secop-checker>`_ is a
+work-in-progress tool to check the :ref:`static metadata <descriptive-data>` of
+a SEC node against :ref:`YAML schemata <schemata>` that define the API for all
+the different SECoP entities contained in it.
+
+In short, it enables you to easily make sure your SEC nodes are standards
+compliant.
+
+
+Spin
+~~~~
+
+`Spin <https://forge.frm2.tum.de/public/doc/spin/master/>`_ is a status
+visualization/HMI tool that presents information .  It has built-in support for
+SECoP nodes and modules among other control systems.

@@ -9,10 +9,10 @@ Welcome to SECoP!
     :hidden:
 
     intro/index
+    implementations/index
     getting-started/index
     specification/index
     howtos/index
-    implementations/index
     rfcs/index
     contact
     ISSE <https://sampleenvironment.org/>
@@ -48,7 +48,7 @@ Welcome to SECoP!
          :color: warning
          :shadow:
 
-         See examples
+         Read an intro
 
    .. grid-item::
 
@@ -56,7 +56,7 @@ Welcome to SECoP!
          :color: info
          :shadow:
 
-         Read the spec
+         Get the spec
 
    .. grid-item::
 
@@ -64,7 +64,7 @@ Welcome to SECoP!
          :color: danger
          :shadow:
 
-         Download code
+         Know the tools
 
    .. grid-item::
 
@@ -95,7 +95,7 @@ implementations.
 
 See the :doc:`Specification <specification/index>` section for the full specification.
 
-In :doc:`Implementations <implementations/index>` you can see the known implementations, which
+In :doc:`Tools <implementations/index>` you can see the known implementations, which
 cover a wide range of use cases and technologies.
 
 SECoP is a project started and coordinated by ISSE. The work was supported by

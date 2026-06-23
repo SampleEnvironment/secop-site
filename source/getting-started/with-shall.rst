@@ -22,6 +22,7 @@ the project, or select a `Release <https://github.com/SampleEnvironment/SHALL-La
 where you can also download a version that has been exported for LabVIEW 2019.
 
 Clone the Repository:
+
 .. code:: bash
 
     git clone https://github.com/SampleEnvironment/SHALL-LabVIEW.git

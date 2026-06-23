@@ -2,6 +2,9 @@ Getting started: Frappy
 =======================
 
 This section will give you an overview of the Frappy implementation of SECoP.
+Since it is a Python package, so you will need a working Python environment
+running 3.12 or newer, and basic knowledge about virtual environments, package
+installation and Python programming.
 
 Installation
 ------------

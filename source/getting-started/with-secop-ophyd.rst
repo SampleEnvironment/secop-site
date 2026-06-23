@@ -1,7 +1,10 @@
 Getting started: SECoP-Ophyd
 ==============================
 
-This section will give you an introduction to the SECoP-Ophyd integration. 
+This section will give you an introduction to the SECoP-Ophyd integration.
+
+- `SECoP-Ophyd Documentation <https://sampleenvironment.github.io/secop-ophyd/>`_
+- `SECoP-Ophyd Repository <https://github.com/SampleEnvironment/secop-ophyd>`_
 
 For this purpose a demonstration project with simulated containerized sample environment hardware
 has been created. It shows all necessary components needed to integrate a SECoP enabled sample 

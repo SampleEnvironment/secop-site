@@ -10,6 +10,8 @@ Tools
     frappy
     octopy
     microsecop
+    secop-ophyd
+    secant-service
 
 
 The SECoP ecosystem contains quite a few different tools to create, connect to,
@@ -69,8 +71,13 @@ Clients
 These packages are dedicated clients to connect to SECoP nodes, or can use SECoP
 among other options.
 
-Secant
-~~~~~~
+secant-service
+~~~~~~~~~~~~~~
+
+:doc:`secant-service <secant-service>` is SECoP client built with
+Elixir/Phoenix.  It connects to one or more SEC Nodes, persists their parameter
+values in a database, and provides a web-interface for live plotting, control, 
+and browsing of historic data.
 
 
 NICOS
@@ -83,6 +90,13 @@ SEC nodes and present their modules as NICOS devices.
 
 secop-ophyd
 ~~~~~~~~~~~
+
+:doc:`secop-ophyd <secop-ophyd>` integrates SECoP hardware into the Bluesky
+experiment orchestration framework.  It automatically generates
+`ophyd-async <https://blueskyproject.io/ophyd-async/main/index.html>`_ device
+objects from a SECNode's descriptive data, so SECoP modules can be used in
+Bluesky plans alongside EPICS, Tango, and other backends without any
+hand-written device definitions.
 
 
 Other tools

@@ -3,11 +3,7 @@ The Busy Sequence - Handling of Long-Running ``change`` and ``do`` Requests
 
 .. note::
 
-   This tutorial is based on the SECoP protocol specification published by
-   the International Society for Sample Environment (ISSE), available at
-   https://github.com/SampleEnvironment/SECoP and
-   https://sampleenvironment.github.io/secop-site/specification/index.html.
-   It focuses on a single concept that trips up most newcomers to the
+   This tutorial focuses on a single concept that trips up most newcomers to the
    protocol: the *busy sequence* that takes place when an ECS (Experiment
    Control System) asks a SEC node to change something, and that change
    cannot be completed instantly.
@@ -15,10 +11,10 @@ The Busy Sequence - Handling of Long-Running ``change`` and ``do`` Requests
 Introduction
 ------------
 
-SECoP (Sample Environment Communication Protocol) is a line-based,
-request/reply protocol used to connect sample environment equipment
-(cryostats, magnets, pressure cells, motors, ...) to the control software
-of an experiment. Every message is a line of text built from three parts:
+SECoP is a line-based, request/reply protocol used to connect sample
+environment equipment (cryostats, magnets, pressure cells, motors, ...)
+to the control software of an experiment. Every message is a line of text
+built from three parts:
 
 .. code-block:: text
 

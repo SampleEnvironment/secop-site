@@ -59,15 +59,27 @@ on every setpoint at the start of the script catches values outside the allowed
 range before the scan begins, rather than failing partway through a long
 overnight measurement.
 
-The two messages
-----------------
+The ``check`` Message Format
+----------------------------
 
-The ``check``/``checked`` exchange is straightforward.
+The ``check`` message follows the same wire format as ``change``: an action
+word, a ``<module>:<accessible>`` specifier, and a JSON value.  The normative
+definition of all three messages in this family is in
+:doc:`/specification/messages/optional`.
+
+A ``check`` request produces exactly one of three direct replies:
+
+* ``checked``: the value would be accepted.
+* ``error_check``: the value would be refused (with a reason).
+* ``error_check`` with error class ``ProtocolError``: the SEC node does not
+  implement ``check`` at all.
+
+The sub-sections below cover each case.
 
 ``check``
 ~~~~~~~~~
 
-.. code-block:: text
+The initial ``check`` request::
 
     > check <module>:<accessible> [<value>]
 
@@ -78,18 +90,14 @@ data part is the value to be validated.
 ``checked`` and ``error_check``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If the validation succeeds, the SEC node replies with:
-
-.. code-block:: text
+If the validation succeeds, the SEC node replies with::
 
     < checked <module>:<accessible> <data-report>
 
 The :ref:`data report <data-report>` in a ``checked`` reply contains the validated value (the
 same value as sent in the request, possibly normalised by the SEC node).
 
-If the validation fails, the reply is:
-
-.. code-block:: text
+If the validation fails, the reply is::
 
     < error_check <module>:<accessible> <error-report>
 
@@ -114,13 +122,13 @@ Important constraints
 The ``check`` message comes with two guarantees that distinguish it from a real
 ``change`` message:
 
-1. **A ``check`` message must not change anything.**
+1. **A** ``check`` **message must not change anything.**
    Neither the hardware state nor any SEC node parameter is modified.  The SEC
    node is only *reading* its current state to evaluate the request; it does
    not act on it.  An ECS can therefore send ``check`` at any time, even while
    the module is busy, without risking interference with an ongoing action.
 
-2. **The response to a ``check`` must not depend on the module's status.**
+2. **The response to a** ``check`` **must not depend on the module's status.**
    Whatever the module's :ref:`status <status-codes>` (IDLE, BUSY, ERROR), the ``check``
    reply for any given value must always be the same.  The ``check`` message
    evaluates the value against the node's *configuration* (physical limits,
@@ -264,7 +272,7 @@ Further reading
 ---------------
 
 * :doc:`/specification/messages/optional`
-* `checkable` — accessible property enabling dry-run support
+* `checkable`: accessible property enabling dry-run support
 * :doc:`/specification/messages/readwrite`
 * :doc:`/specification/messages/commands`
 * :ref:`error-reply`

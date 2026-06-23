@@ -98,9 +98,24 @@ See the :doc:`Specification <specification/index>` section for the full specific
 In :doc:`Implementations <implementations/index>` you can see the known implementations, which
 cover a wide range of use cases and technologies.
 
-From 2022 to 2024, as part of the project SECoP\@HMC, the capabilities around
-metadata were extended to allow easier interfacing with metadata initiatives
-working further up the stack.
+SECoP is a project started and coordinated by ISSE. The work was supported by
+the SINE 2020 program from 2015 to 2019. From 2022 to 2024, as part of the
+project SECoP\@HMC, the capabilities around metadata were extended to allow
+easier interfacing with metadata initiatives working further up the stack.
 
-.. image:: _static/secophmc.svg
-   :width: 400
+.. grid::
+
+    .. grid-item::
+
+        .. image:: _static/isse.png
+            :width: 90
+
+    .. grid-item::
+
+        .. image:: _static/sine2020.png
+            :width: 50
+
+    .. grid-item::
+
+        .. image:: _static/secophmc.svg
+            :width: 180

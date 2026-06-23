@@ -6,7 +6,7 @@ Guides
     :maxdepth: 1
 
     limits
-    handshake
+    busy-sequence
     coupled_modules
     meaning
     check_message

@@ -1,5 +1,5 @@
-Handshake
-=========
+The Busy Sequence - Handling of Long-Running ``change`` and ``do`` Requests
+===========================================================================
 
 .. note::
 
@@ -8,7 +8,7 @@ Handshake
    https://github.com/SampleEnvironment/SECoP and
    https://sampleenvironment.github.io/secop-site/specification/index.html.
    It focuses on a single concept that trips up most newcomers to the
-   protocol: the *handshake* that takes place when an ECS (Experiment
+   protocol: the *busy sequence* that takes place when an ECS (Experiment
    Control System) asks a SEC node to change something, and that change
    cannot be completed instantly.
 
@@ -18,13 +18,15 @@ Introduction
 SECoP (Sample Environment Communication Protocol) is a line-based,
 request/reply protocol used to connect sample environment equipment
 (cryostats, magnets, pressure cells, motors, ...) to the control software
-of an experiment. Every message is a line of text built from three parts::
+of an experiment. Every message is a line of text built from three parts:
 
-    <action> <specifier> <data>
+.. code-block:: text
 
-For example, ``change t1:target 295`` is a request whose action is
-``change``, whose specifier is ``t1:target`` (the parameter ``target`` of
-module ``t1``), and whose data is the JSON value ``295``.
+   <action> <specifier> <data>
+
+For example, ``change temperature:target 295`` is a request whose action is
+``change``, whose specifier is ``temperature:target`` (the parameter ``target`` of
+module ``temperature``), and whose data is the JSON value ``295``.
 
 Reading a value or sending a simple command is straightforward: the ECS
 asks, the SEC node answers, done. But many real instruments cannot
@@ -33,17 +35,17 @@ controller's target to 295 K does not mean the sample is suddenly at
 295 K -- it means the controller now needs to *ramp* there, which may
 take minutes. SECoP needs a well-defined way to say "I have accepted your
 request and started working on it, but I am not finished yet." That
-well-defined way is what this tutorial calls the **handshake**.
+well-defined way is what this tutorial calls the **busy sequence**.
 
-Why is a handshake needed at all?
-----------------------------------
+Why is a busy sequence needed at all?
+--------------------------------------
 
-Imagine a temperature controller module ``mf`` (a magnet, in this case)
-with a ``target`` parameter. A naive protocol might work like this:
+Imagine a magnet module ``magnetic_field`` with a ``target`` parameter. A naive
+protocol might work like this:
 
-1. ECS sends ``change mf:target 12``.
+1. ECS sends ``change magnetic_field:target 12``.
 2. SEC node waits until the field has actually reached 12 T.
-3. SEC node replies ``changed mf:target [12, ...]``.
+3. SEC node replies ``changed magnetic_field:target [12, ...]``.
 
 This is simple, but it is a poor design for a control system:
 
@@ -75,7 +77,7 @@ status changes always are.
 The two messages involved
 --------------------------
 
-The handshake described here applies to both ways of triggering an
+The busy sequence described here applies to both ways of triggering an
 action in SECoP:
 
 ``change`` -- Writing to a parameter
@@ -90,7 +92,7 @@ action in SECoP:
     like ``setpid``. The successful reply is ``done``; the error reply is
     ``error_do``.
 
-Both follow exactly the same handshake pattern, because both can trigger
+Both follow exactly the same busy-sequence pattern, because both can trigger
 a long-running side effect. The rest of this tutorial uses ``change`` as
 the running example, since setting a ``target`` is the most common case,
 and then shows ``do`` separately.
@@ -98,7 +100,7 @@ and then shows ``do`` separately.
 The ``status`` parameter
 -------------------------
 
-Before looking at the handshake itself, it helps to know the parameter
+Before looking at the busy sequence itself, it helps to know the parameter
 that carries the "are we done yet?" information: `status` (see :ref:`status-codes`).
 
 ``status`` is a tuple of an enum code and a human-readable string, e.g.
@@ -116,13 +118,13 @@ Status code Group name  Meaning
 =========== =========== ============================================================
 
 Finer-grained sub-codes exist (for example 370 = "RAMPING", a sub-state
-of BUSY), but for understanding the handshake it is enough to know the
+of BUSY), but for understanding the busy sequence it is enough to know the
 two values that matter most: **100 (IDLE)** means "nothing is happening,
 you can trust the current value", and **300 (BUSY)** means "an action
 is in progress, the main value is still moving towards its target."
 
-The handshake, step by step
------------------------------
+The busy sequence, step by step
+--------------------------------
 
 The specification gives a precise, mandatory sequence of events for "the
 correct handling of side-effects" whenever an ECS triggers an action via
@@ -132,7 +134,7 @@ correct handling of side-effects" whenever an ECS triggers an action via
    for a reply.
 2. The SEC node checks whether the request is valid and can be carried
    out at all. If not, it immediately sends an error reply
-   (``error_change`` or ``error_do``) and the handshake ends there. If
+   (``error_change`` or ``error_do``) and the sequence ends there. If
    the request is valid but there is actually nothing to do (e.g. the
    target equals the current value), the SEC node skips ahead to step 4.
 3. If the action can be completed essentially instantly, the SEC node
@@ -183,56 +185,56 @@ A first example: setting a magnetic field target
 -------------------------------------------------
 
 This is the canonical example from the specification: a magnet module
-``mf`` that needs to ramp its field to a new target. The connection has
+``magnetic_field`` that needs to ramp its field to a new target. The connection has
 already sent `activate`, so it receives asynchronous `update` events
 (qualifiers such as the timestamp are abbreviated as ``{...}`` below for
 readability).
 
-.. image:: /_static/handshake_sequence_en.svg
-   :alt: Sequence diagram of the five-step SECoP handshake between an ECS client and a SEC node
+.. image:: /_static/busy_sequence_en.svg
+   :alt: Sequence diagram of the five-step SECoP busy sequence between an ECS client and a SEC node
    :width: 100%
 
 ::
 
-    > read mf:status
-    < reply mf:status [[100,"OK"],{...}]
+    > read magnetic_field:status
+    < reply magnetic_field:status [[100,"OK"],{...}]
 
-    > change mf:target 12
-    < update mf:status [[300,"ramping field"],{...}]
-    < update mf:target [12,{...}]
-    < changed mf:target [12,{...}]
-    < update mf:value [0.01293,{...}]
+    > change magnetic_field:target 12
+    < update magnetic_field:status [[300,"ramping field"],{...}]
+    < update magnetic_field:target [12,{...}]
+    < changed magnetic_field:target [12,{...}]
+    < update magnetic_field:value [0.01293,{...}]
 
       ... time passes, field keeps ramping, periodic value updates ...
 
-    < update mf:status [[100,"OK"],{...}]
+    < update magnetic_field:status [[100,"OK"],{...}]
 
 Let's connect this to the five steps above:
 
-* The first ``read mf:status`` simply confirms the module starts out
+* The first ``read magnetic_field:status`` simply confirms the module starts out
   IDLE (code 100).
-* ``change mf:target 12`` is the initiating request (step 1).
+* ``change magnetic_field:target 12`` is the initiating request (step 1).
 * The SEC node validates the request, decides it cannot be completed
-  instantly, and switches to BUSY -- this is the ``update mf:status
+  instantly, and switches to BUSY -- this is the ``update magnetic_field:status
   [[300,"ramping field"],...]`` line (step 3). Note that this is an
   *event*, not a reply: it is pushed to the client, unsolicited, exactly
   as it would be pushed to any *other* connected client that had
   activated updates.
 * The new target value is also a side effect of the change, so it too
-  is announced via ``update mf:target [12,...]`` (still step 3 / step 4
+  is announced via ``update magnetic_field:target [12,...]`` (still step 3 / step 4
   preparation -- this is the value being "stored", not yet read back
   from hardware).
-* Only now does the ``changed mf:target [12,...]`` reply appear (step
+* Only now does the ``changed magnetic_field:target [12,...]`` reply appear (step
   4): the direct answer to the original request, sent *after* the
   related updates, exactly as the "side effects before reply" rule
   demands.
 * While the field is ramping, the ECS keeps receiving ``update
-  mf:value`` events with the current field reading -- this is what lets
+  magnetic_field:value`` events with the current field reading -- this is what lets
   a GUI show a live progress display without polling.
 * Eventually, once the field has reached 12 T and the magnet is settled,
   the SEC node announces the transition back to IDLE via a final
-  ``update mf:status [[100,"OK"],...]`` (step 5). From this moment on,
-  ``mf:value`` can be trusted to equal the target (within the device's
+  ``update magnetic_field:status [[100,"OK"],...]`` (step 5). From this moment on,
+  ``magnetic_field:value`` can be trusted to equal the target (within the device's
   precision), and any new ``change`` request can be processed without
   first waiting for a previous one to clear.
 
@@ -242,11 +244,11 @@ Two clients at once
 Because *all* clients with activated updates receive the same BUSY/IDLE
 transitions, a second client that did nothing at all still sees::
 
-    < update mf:status [[300,"ramping field"],{...}]
-    < update mf:target [12,{...}]
-    < update mf:value [0.01293,{...}]
+    < update magnetic_field:status [[300,"ramping field"],{...}]
+    < update magnetic_field:target [12,{...}]
+    < update magnetic_field:value [0.01293,{...}]
     ...
-    < update mf:status [[100,"OK"],{...}]
+    < update magnetic_field:status [[100,"OK"],{...}]
 
 This client never sent a ``change`` and never receives a ``changed``
 reply -- it only ever receives the *update* stream. This is precisely
@@ -254,7 +256,7 @@ the "other clients would be left in the dark" problem mentioned earlier,
 solved by always broadcasting status and value changes to every
 activated client, regardless of who triggered them.
 
-.. image:: /_static/handshake_two_clients_en_v2.svg
+.. image:: /_static/busy_sequence_two_clients_en.svg
    :alt: Diagram showing two clients receiving the same update events, with only the requesting client getting the direct changed reply
    :width: 100%
 
@@ -265,8 +267,8 @@ Not every ``do`` needs to go through BUSY. If an action genuinely
 finishes within a communication round-trip, steps 2 and 3 collapse and
 the SEC node can reply immediately::
 
-    > do t1:stop
-    < done t1:stop [null,{"t":1505396348.876}]
+    > do temperature:stop
+    < done temperature:stop [null,{"t":1505396348.876}]
 
 Here ``stop`` has no return value (``null``), and stopping the module
 was fast enough that no BUSY phase was needed (in practice, ``stop``
@@ -277,18 +279,18 @@ deciding, per action, whether a BUSY excursion is necessary).
 A ``do`` command with both an argument and a return value looks the
 same in structure::
 
-    > do t1:setpid {"p": 100.0, "i": 5.0, "d": 1.2}
-    < done t1:setpid [[42, "control active"], {"t": 123456789.2}]
+    > do temperature:setpid {"p": 100.0, "i": 5.0, "d": 1.2}
+    < done temperature:setpid [[42, "control active"], {"t": 123456789.2}]
 
 A third example: when the request is rejected outright
 -------------------------------------------------------
 
-Step 2 of the handshake allows the SEC node to refuse a request before
+Step 2 of the busy sequence allows the SEC node to refuse a request before
 anything else happens. No BUSY transition, no update -- just an
 immediate error reply::
 
-    > change t:target -9
-    < error_change t:target ["RangeError", "requested value (-9) is outside limits (0..300)", {}]
+    > change temperature:target -9
+    < error_change temperature:target ["RangeError", "requested value (-9) is outside limits (0..300)", {}]
 
 Other relevant :ref:`error classes <error-classes>` for this situation include `IsBusy` (the
 module is already busy with a previous action and cannot accept a new
@@ -308,14 +310,14 @@ Why polling alone would not be enough
 --------------------------------------
 
 A client that has *not* activated asynchronous updates can still
-implement a correct handshake, just less efficiently: it sends
+implement a correct busy sequence, just less efficiently: it sends
 ``change``, waits for ``changed``/``error_change``, and then repeatedly
-sends ``read mf:status`` until it sees IDLE again. This works, but it
+sends ``read magnetic_field:status`` until it sees IDLE again. This works, but it
 illustrates exactly why the asynchronous ``update`` mechanism exists:
 without it, "how is the ramp going?" can only be answered by hammering
 the connection with ``read`` requests, and the *other* connected clients
 would have absolutely no way of finding out that anything was happening
-at all, unless they too kept polling continuously. The handshake's
+at all, unless they too kept polling continuously. The busy sequence's
 design -- broadcast the BUSY/IDLE transition and the changing values via
 events, and keep the direct reply for "I accepted/rejected your
 specific request" -- gives both efficiency and the ability for several
@@ -327,7 +329,7 @@ Summary
 * Reading a value or issuing most commands in SECoP is a plain
   request/reply exchange.
 * Writing a parameter (``change``) or executing a command (``do``) that
-  may take a noticeable amount of time follows a stricter handshake:
+  may take a noticeable amount of time follows the busy sequence:
   the SEC node first decides whether the request is even valid, then --
   if it requires real time -- announces a transition to ``BUSY`` via an
   asynchronous ``update`` event to *all* activated clients, only then

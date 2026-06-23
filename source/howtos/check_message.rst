@@ -9,7 +9,7 @@ Using the ``check`` message for dry-run validation
    https://sampleenvironment.github.io/secop-site/specification/index.html.
    It assumes you are already comfortable with the basic SECoP request/reply
    cycle and with the `change` message in particular.  If you are not, the
-   :doc:`companion guide on the SECoP handshake <handshake>` is a good starting point.
+   :doc:`companion guide on the SECoP busy sequence <busy-sequence>` is a good starting point.
 
 Introduction
 ------------

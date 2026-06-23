@@ -44,3 +44,12 @@ system.
     :maxdepth: 1
 
     with-secop-ophyd
+
+secant-service is a web-based SECoP client that connects to SECNodes, logs
+parameter values to a database, and provides a browser interface for browsing
+and querying the data.
+
+.. toctree::
+    :maxdepth: 1
+
+    with-secant-service

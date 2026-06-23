@@ -6,7 +6,9 @@ Guides
     :maxdepth: 1
 
     limits
-    controlled_by
+    busy-sequence
+    coupled_modules
     meaning
+    check_message
 
 HowTo's, tips and more documentation.

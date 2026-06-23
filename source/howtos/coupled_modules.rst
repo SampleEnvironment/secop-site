@@ -1,0 +1,330 @@
+Coupled Modules - Understanding SECoP Inter-Module Interactions
+===============================================================
+
+
+.. note::
+
+   This tutorial is based on the SECoP protocol specification published by
+   the International Society for Sample Environment (ISSE), available at
+   https://github.com/SampleEnvironment/SECoP and
+   https://sampleenvironment.github.io/secop-site/specification/index.html.
+   It focuses on a single concept: how SECoP describes *coupling* between
+   two modules that compete for, or hand off, control of a piece of
+   hardware, expressed through the ``controlled_by`` and
+   ``control_active`` parameters. This tutorial assumes familiarity with
+   the SECoP busy sequence (`change`/`do`, `update`, and the `status`
+   parameter), as described in the :doc:`companion tutorial <busy-sequence>`.
+
+Introduction
+------------
+
+So far we have treated SECoP modules as if each one independently owned
+its own little piece of hardware: a module has a ``value``, maybe a
+``target``, and a ``status`` that tells the ECS whether it is busy. In
+practice, sample environment hardware is rarely that tidy. A single
+physical device often exposes *several* SECoP modules that are not
+independent at all, because underneath they share the same actuator.
+
+Two classic examples:
+
+* A temperature controller drives a heater. The ECS may see two
+  modules: a temperature module ``temperature`` (a *Drivable*, with a target
+  temperature) and a heater-power module ``heater_power`` (a
+  *Writable*, with a target power in Watts). Normally ``temperature``
+  decides how much power to apply, but a user doing instrument
+  commissioning might want to bypass the control loop and set the
+  heater power directly.
+* A power supply for a magnet can be operated in constant-current mode
+  or constant-voltage mode, but never both at once. The ECS sees two
+  modules, ``current`` and ``voltage``, each independently writable, yet writing
+  to one must implicitly disable the other.
+
+SECoP needs a standard way to describe "these two modules share an
+actuator, and right now, *this* one is the one actually steering it."
+That is exactly what ``controlled_by`` and ``control_active`` are for.
+
+Why is this needed at all?
+--------------------------
+
+Without an explicit coupling mechanism, the situations above would be
+invisible to the ECS, with consequences that range from confusing to
+dangerous:
+
+* **Silent loss of control.** If the ECS sets ``heater_power:target`` to
+  some fixed value to do a manual measurement, and the temperature
+  module ``temperature`` is still internally running its control loop,
+  ``temperature`` may overwrite that value moments later. The ECS would
+  have no way of knowing why its setting "didn't stick."
+* **Two writers, one wire.** With the ``current``/``voltage`` power supply, nothing
+  in a plain SECoP module description prevents an ECS (or a confused
+  user) from writing to both ``current:target`` and ``voltage:target`` in the same
+  session. Without a coupling indicator, the ECS cannot tell that doing
+  so is contradictory, nor which of the two settings is actually in
+  effect.
+* **No way to ask "who is in charge right now?"** Even if the firmware
+  internally handles the conflict sensibly, the ECS (and the human
+  using it) still need a parameter to *read*, to decide whether it is
+  safe or sensible to issue a particular command at this moment.
+* **No standard way to hand over control.** Switching from automatic to
+  manual heater control (and back) needs a defined trigger and a
+  defined, observable outcome, in the same self-describing spirit as
+  the rest of SECoP. It should not require a custom, undocumented
+  parameter every single instrument re-invents.
+
+SECoP's answer is two read-only parameters, present on the modules
+that participate in the coupling, plus an ordinary ``target``/``go``
+write to switch which module is in control, following the very same
+busy-sequence rules already familiar from ``change`` and ``do``.
+
+The two parameters involved
+---------------------------
+
+``controlled_by``: "who is driving me?"
+    A read-only parameter of datatype :ref:`enum`, whose possible values
+    are the names of other modules, plus the special value ``"self"``
+    (which must be enum value ``0``). A module that has this parameter
+    is declaring: "my behaviour may currently be dictated by one of
+    these other named modules, instead of by my own ``target``."
+
+``control_active``: "am I the one actually in control?"
+    A read-only boolean on a `Drivable` or `Writable`
+    module. When ``true``, the module's own control mechanism is
+    trying to bring its ``value`` to its ``target``; this is the
+    normal, "business as usual" case, and is also the implicit default
+    for a module that does not even have this parameter. When
+    ``false``, that control mechanism is switched off and the module's
+    own ``target`` is *not* considered any more; the module behaves
+    like a plain `Readable` until control is handed back to it.
+
+These two parameters are normally used together, on a *pair* of
+coupled modules, to describe the two sides of the same coin.
+
+Case 1: a controller and a controlled actuator
+-----------------------------------------------
+
+This is the temperature/heater example. Module ``temperature`` (temperature) can
+control module ``heater_power`` (heater power). They are never both
+"in charge" of the heater at the same time.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 25 30 45
+
+   * - State
+     - Module ``temperature``
+     - Module ``heater_power``
+   * - temperature is controlling
+     - ``control_active=true``
+     - ``controlled_by="temperature"``, ``control_active=false``
+   * - heater_power is self-controlled
+     - ``control_active=false`` [1]_
+     - ``controlled_by="self"``, ``control_active=true``
+
+.. [1] When ``temperature`` is not controlling, it has no ``heater_power`` to act
+   through, so reaching its own ``target`` is simply not happening;
+   reading ``temperature:status`` will typically reflect this.
+
+How control is taken
+~~~~~~~~~~~~~~~~~~~~~
+
+The rule given by the specification is simple and symmetric: **whichever
+module receives a target change (or a** `go` **command, if present)
+takes over control.**
+
+* Writing ``change temperature:target ...`` (or sending ``go`` to ``temperature``) makes
+  ``temperature`` take over control. Before the SEC node sends back the
+  ``changed``/``done`` reply for that request, it must already have set
+  ``heater_power:controlled_by`` to ``"temperature"`` and updated both modules'
+  ``control_active`` parameters correctly.
+* Writing ``change heater_power:target ...`` makes ``heater_power`` take
+  back control for itself. The SEC node must set
+  ``heater_power:controlled_by`` to ``"self"`` and again update both
+  ``control_active`` parameters before replying.
+
+This "update side effects before replying" rule should look familiar:
+it is exactly the same rule used in the busy-sequence tutorial for
+``status`` changes. Here, ``controlled_by`` and ``control_active`` are
+simply two more parameters that count as "side effects" of a target
+change, and must be communicated via ``update`` events to all
+activated clients, before the direct reply is sent.
+
+Explicitly releasing control: ``control_off``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Setting a module's ``target`` always turns its own control back *on*.
+But what if there is no controlling module to hand off to, for
+instance a temperature loop with no heater module exposed at all, or
+one where the heater happens not to be a `Writable`? For this
+case, a module may offer the optional `control_off` command, whose
+only job is to set `control_active` to ``false`` directly. More
+generally, `control_off` can be thought of as putting the module into
+an "energy saving" state: switching off active heating/cooling for a
+temperature loop, or cutting drive current for a motor.
+
+.. image:: /_static/controlled_by_controller_coupling_en.svg
+   :alt: Diagram of module temperature and heater_power switching control via controlled_by and control_active
+   :width: 100%
+
+A worked example
+~~~~~~~~~~~~~~~~~
+
+Both connections below have already sent ``activate``; qualifiers are
+abbreviated as ``{...}``::
+
+    > read temperature:control_active
+    < reply temperature:control_active [true,{...}]
+    > read heater_power:controlled_by
+    < reply heater_power:controlled_by ["temperature",{...}]
+
+    > change heater_power:target 5.5
+    < update heater_power:controlled_by ["self",{...}]
+    < update temperature:control_active [false,{...}]
+    < update heater_power:control_active [true,{...}]
+    < update heater_power:target [5.5,{...}]
+    < changed heater_power:target [5.5,{...}]
+
+A user has just taken manual control of the heater to run it at a fixed
+5.5 W, bypassing ``temperature``'s control loop. Notice the order: the coupling
+parameters (``controlled_by``, both ``control_active`` flags) are
+announced as ``update`` events *first*; only then does the ``target``
+update and the final ``changed`` reply follow, precisely the
+side-effects-before-reply ordering from the busy sequence.
+
+Handing control back is the mirror image::
+
+    > change temperature:target 300
+    < update heater_power:controlled_by ["temperature",{...}]
+    < update temperature:control_active [true,{...}]
+    < update heater_power:control_active [false,{...}]
+    < update temperature:target [300,{...}]
+    < update temperature:status [[300,"ramping"],{...}]
+    < changed temperature:target [300,{...}]
+
+Setting a new target on ``temperature`` reclaims control of the heater for the
+control loop, and exactly as in an ordinary single-module
+busy sequence, ``temperature`` may now also go ``BUSY`` while it ramps towards 300 K.
+The two concepts compose cleanly: coupling decides *who* is allowed to
+drive the hardware right now, while ``status`` (as covered in the
+busy-sequence tutorial) describes whether *that* module is currently busy
+doing so.
+
+Case 2: two mutually exclusive writable modules
+------------------------------------------------
+
+The second pattern in the specification has no single "controller"
+module; instead, two peer modules, ``current`` (current) and ``voltage`` (voltage)
+on a power supply, are mutually exclusive alternatives. Exactly one of
+them is ever ``controlled_by="self"`` at a time.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 25 37 38
+
+   * - State
+     - Module ``current``
+     - Module ``voltage``
+   * - constant current
+     - ``controlled_by="self"``, ``control_active=true``
+     - ``controlled_by="current"``, ``control_active=false``
+   * - constant voltage
+     - ``controlled_by="voltage"``, ``control_active=false``
+     - ``controlled_by="self"``, ``control_active=true``
+
+.. image:: /_static/controlled_by_iv_coupling_en.svg
+   :alt: Diagram of module current and voltage toggling between constant current and constant voltage via controlled_by and control_active
+   :width: 100%
+
+The module with ``control_active=false`` behaves like a plain
+*Readable*: its own ``target`` is ignored entirely, even though
+the parameter is still present and (for the inactive module) simply
+not taken into account. Writing to the *other* module's ``target`` is
+what flips the supply from one mode to the other, toggling both
+modules' ``control_active`` flags as a side effect::
+
+    > read current:control_active
+    < reply current:control_active [true,{...}]
+    > read voltage:control_active
+    < reply voltage:control_active [false,{...}]
+
+    > change voltage:target 12
+    < update current:controlled_by ["voltage",{...}]
+    < update current:control_active [false,{...}]
+    < update voltage:controlled_by ["self",{...}]
+    < update voltage:control_active [true,{...}]
+    < update voltage:target [12,{...}]
+    < changed voltage:target [12,{...}]
+
+After this exchange, the power supply is now in constant-voltage mode
+at 12 V; any value still present in ``current:target`` is simply not acted
+upon until ``current`` is given a new target of its own.
+
+What if more than two modules share one controller?
+----------------------------------------------------
+
+The specification notes that a single controlling module may need to
+arbitrate between *several* controlled modules at once, for example
+a liquid-helium cryostat's temperature controller might, in turn,
+control both a heater-power module and a helium-flow/pressure module
+for cooling. In such cases, ``controlled_by`` and ``control_active``
+alone are not expressive enough to choose *which* secondary mode is
+active; the specification allows additional, implementation-specific
+parameters for that finer-grained selection (the example given is a
+custom parameter such as ``_automatic_nv_pressure_mode``). The
+takeaway for the ECS author is: ``controlled_by``/``control_active``
+reliably answer "is this module currently steering its own hardware,
+or not?", but on more complex instruments there may be additional,
+device-specific parameters layered on top to describe richer
+arbitration logic.
+
+Why this fits the rest of SECoP's design
+-----------------------------------------
+
+It is worth noting what SECoP does *not* introduce here: there is no
+new message type, no new busy-sequence step, and no special "take control"
+command in the general case (only the optional ``control_off`` adds a
+new command, and only where there is no module to hand control back
+to). Coupling is expressed entirely through:
+
+* two ordinary, read-only parameters (`controlled_by`,
+  `control_active`) that any generic SECoP client already knows how
+  to read, poll, or subscribe to via `activate`, and
+* the existing `change`/`go` busy sequence, whose "side effects before
+  reply" rule is simply asked to also cover these two parameters
+  whenever a target change causes a hand-over of control.
+
+This is consistent with SECoP's general design philosophy: rather than
+inventing protocol-level machinery for every new situation, new
+semantics are expressed as additional, self-describing parameters
+layered on top of the same small set of messages introduced for the
+basic busy sequence.
+
+Summary
+-------
+
+* Two (or more) SECoP modules can share a single physical actuator.
+  SECoP makes this explicit via the read-only parameters
+  ``controlled_by`` (which module currently has control, or
+  ``"self"``) and ``control_active`` (whether *this* module's own
+  control loop is currently engaged).
+* Control is taken implicitly: whichever module receives a ``target``
+  change (or ``go`` command) becomes the one in control, and the SEC
+  node updates ``controlled_by``/``control_active`` on both modules
+  accordingly.
+* A module without an alternative to hand control to may offer the
+  optional ``control_off`` command, simply switching its own
+  ``control_active`` to ``false``.
+* These coupling updates must be communicated to all activated clients
+  *before* the direct reply to the triggering ``change``/``do``
+  request, exactly the same side-effects-before-reply rule already
+  used for ``status`` transitions in the basic busy sequence.
+* For more complex arbitration between several controlled modules,
+  instruments may add further custom, device-specific parameters on
+  top of this basic mechanism.
+
+Further reading
+---------------
+
+* :doc:`/specification/accessibles` — parameters and commands, including coupled modules
+* :ref:`interface-classes`
+* :doc:`/specification/messages/readwrite`
+* :issue:`059 set_mode and mode instead of some commands`

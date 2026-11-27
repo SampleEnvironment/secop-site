@@ -113,10 +113,10 @@ the different SECoP entities contained in it.
 In short, it enables you to easily make sure your SEC nodes are standards
 compliant.
 
-
 Spin
 ~~~~
 
 `Spin <https://forge.frm2.tum.de/public/doc/spin/spin-master/>`_ is a status
 visualization/HMI tool that presents information .  It has built-in support for
-SECoP nodes and modules among other control systems.https://forge.frm2.tum.de/public/doc/spin/spin-master/
+SECoP nodes and modules among other control systems.  The source code is
+available from the `MLZ forge <https://forge.frm2.tum.de/review/admin/repos/mlz/controlbox/spin>`_.
